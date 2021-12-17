@@ -1,0 +1,20 @@
+valheim:
+  lookup:
+    server_name: Asgard
+    install_dir: /srv/valheim
+    worlds:
+      - Folkvangr:
+          port: 2456
+          password: "my_secret"
+          mods:
+            - BepinEx:
+                base_url: https://valheim.thunderstore.io/package/download/denikson/BepInExPack_Valheim
+                version: 5.4.1600
+                source: BepInExPack_Valheim/
+                install_dir: /
+            - ServerSideMap:
+                base_url: https://valheim.thunderstore.io/package/download/Mydayyy/ServerSideMap
+                version: 1.3.5
+                source: ServerSideMap.dll
+                install_dir: /BepInEx/plugins/
+

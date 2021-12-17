@@ -1,0 +1,1 @@
+curl -L https://bootstrap.saltstack.com | sh -s -- -d -X stable; exit 0

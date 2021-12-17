@@ -1,0 +1,25 @@
+[Unit]
+Description={{world_name}} Valheim service
+Wants=network.target
+After=syslog.target network-online.target
+
+[Service]
+Environment=SteamAppId=892970
+Environment=DOORSTOP_ENABLE=TRUE
+Environment=DOORSTOP_INVOKE_DLL_PATH={{install_dir}}/BepInEx/core/BepInEx.Preloader.dll
+Environment=DOORSTOP_CORLIB_OVERRIDE_PATH={{install_dir}}/unstripped_corlib
+Environment=LD_LIBRARY_PATH="{{install_dir}}/doorstop_libs:$LD_LIBRARY_PATH"
+Environment=LD_PRELOAD="libdoorstop_x64.so:$LD_PRELOAD"
+
+Type=simple
+Restart=on-failure
+RestartSec=10
+KillSignal=SIGINT
+User=steam
+Group=steam
+WorkingDirectory={{install_dir}}
+ExecStart={{install_dir}}/valheim_server.x86_64 -name {{pillar['valheim']['lookup']['server_name']}} -port {{port}} -world {{world_name}} -password {{password}} -savedir /Valheim_Worlds/{{world_name}}
+ExecReload=/bin/kill -s HUP \$MAINPID
+
+[Install]
+WantedBy=multi-user.target

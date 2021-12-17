@@ -1,0 +1,30 @@
+variables:
+  SALT_LINT_IMAGE: warpnetbv/salt-lint:latest
+  SALT_IMAGE: saltstack/salt:latest
+
+default:
+  tags:
+    - docker
+
+stages:
+  - validate
+
+salt_lint:
+  stage: validate
+  image:
+    name: $SALT_LINT_IMAGE
+    entrypoint: [""]
+  script:
+    - salt-lint valheim/
+
+salt_apply:
+  stage: validate
+  image:
+    name: $SALT_IMAGE
+    entrypoint: [""]
+  script:
+    - mkdir -p /etc/salt/minion.d && cp test/minion.d/masterless.conf /etc/salt/minion.d/
+    - mkdir -p /srv/pillar && cp -r test/pillar /srv/
+    - mkdir -p /srv/salt && cp -r test/base /srv/salt/
+    - mkdir -p /srv/salt/base && cp -r valheim /srv/salt/base/
+    - make render-sls

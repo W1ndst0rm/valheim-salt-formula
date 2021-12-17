@@ -1,0 +1,32 @@
+name: SaltValidate
+
+on: [push]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    name: Salt Lint
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run salt-lint
+        uses: roaldnefs/salt-lint-action@master
+        env:
+          ACTION_STATE_FIND_PATH: valheim
+
+  apply:
+    runs-on: ubuntu-latest
+    container:
+      image: saltstack/salt:latest
+      options: --user root 
+    name: Salt Apply
+    needs: lint
+    steps:
+      - uses: actions/checkout@v2
+      - run: |
+          cd ${GITHUB_WORKSPACE}
+          mkdir -p /etc/salt/minion.d && cp test/minion.d/masterless.conf /etc/salt/minion.d/
+          mkdir -p /srv/pillar && cp -r test/pillar /srv/
+          mkdir -p /srv/salt && cp -r test/base /srv/salt/
+          mkdir -p /srv/salt/base && cp -r valheim /srv/salt/base/
+          make render-sls
+
